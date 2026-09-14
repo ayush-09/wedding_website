@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { signalUserGesture } from "@/lib/gesture";
+import { playIntroFromGesture, signalUserGesture } from "@/lib/gesture";
 
 export default function FirstClickReplay() {
   useEffect(() => {
@@ -9,20 +9,13 @@ export default function FirstClickReplay() {
     let handled = false;
     const onFirst = () => {
       if (handled) return;
-      handled = true;
       try {
-        try {
-          console.debug("[FirstClickReplay] first gesture detected — signalling gesture");
-        } catch {}
-        try {
-          const playIntro = (window as any).__fa_play_intro;
-          if (typeof playIntro === "function") playIntro();
-        } catch {}
+        console.debug("[FirstClickReplay] first gesture detected — signalling gesture");
+        const played = playIntroFromGesture();
         // Mark global flag so components that mount later can detect
         // a prior user gesture and attempt playback immediately.
-        try {
-          signalUserGesture();
-        } catch {}
+        signalUserGesture();
+        handled = played;
       } catch {
         // ignore
       }

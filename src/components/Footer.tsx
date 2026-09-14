@@ -3,13 +3,12 @@
 import { Monogram } from "./Monogram";
 import { couple } from "@/lib/couple";
 import { useLanguage } from "./LanguageProvider";
-import { signalUserGesture, requestIntroReplay } from "@/lib/gesture";
+import { playIntroFromGesture, signalUserGesture, requestIntroReplay } from "@/lib/gesture";
 
 export function Footer() {
   const { t, lang } = useLanguage();
   const replayIntro = () => {
     if (typeof window === "undefined") return;
-    const playIntro = (window as any).__fa_play_intro;
     try {
       // Signal a user gesture so audio contexts can resume.
       signalUserGesture();
@@ -22,7 +21,8 @@ export function Footer() {
     // Start audio directly inside the button's user activation. This is
     // required by mobile Safari and also avoids relying on event timing.
     try {
-      if (typeof playIntro === "function") playIntro();
+      if (playIntroFromGesture())
+        return;
       else window.location.reload();
     } catch {
       window.location.reload();

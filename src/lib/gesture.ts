@@ -1,3 +1,15 @@
+export function playIntroFromGesture() {
+  if (typeof window === "undefined") return false;
+  try {
+    const playIntro = (window as any).__fa_play_intro;
+    if (typeof playIntro !== "function") return false;
+    playIntro();
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function signalUserGesture() {
   if (typeof window === "undefined") return;
   try {
