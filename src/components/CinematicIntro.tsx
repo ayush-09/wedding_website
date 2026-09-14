@@ -128,23 +128,35 @@ export function CinematicIntro() {
 
     const armGestureFallback = () => {
       if (cancelled || removeGesture) return;
+
+      // cleanup function must be declared before the handler uses it
+      let cleanupGestureListeners: (() => void) | null = null;
+
       const onGesture = () => {
-        // Don't attempt to play the intro immediately on an early
-        // gesture — just remove the temporary listeners. The scheduled
-        // autoplay attempt at the 3s mark will call `tryPlay()` then
-        // and will succeed if a user gesture occurred earlier.
-        removeGesture?.();
+        // Remove listeners and immediately attempt to play the intro
+        // so the first user interaction starts audio right away.
+        try {
+          cleanupGestureListeners?.();
+        } catch {}
+        tryPlay();
       };
-      const cleanup = () => {
-        window.removeEventListener("pointerdown", onGesture);
-        window.removeEventListener("keydown", onGesture);
-        window.removeEventListener("touchstart", onGesture);
+
+      cleanupGestureListeners = () => {
+        try {
+          window.removeEventListener("pointerdown", onGesture);
+          window.removeEventListener("keydown", onGesture);
+          window.removeEventListener("touchstart", onGesture);
+          window.removeEventListener("fa-user-gesture", onGesture as any);
+        } catch {}
         removeGesture = null;
       };
+
       window.addEventListener("pointerdown", onGesture, { once: true });
       window.addEventListener("keydown", onGesture, { once: true });
       window.addEventListener("touchstart", onGesture, { once: true });
-      removeGesture = cleanup;
+      // external custom event used by other components to signal a gesture
+      window.addEventListener("fa-user-gesture", onGesture as any, { once: true });
+      removeGesture = cleanupGestureListeners;
     };
 
     const tryPlay = () => {
