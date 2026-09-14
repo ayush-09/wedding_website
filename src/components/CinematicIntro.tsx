@@ -83,6 +83,7 @@ export function CinematicIntro() {
     const audio = new Audio("/audio/intoduction.mp3");
     audio.preload = "auto";
     audio.volume = 0;
+    audio.load();
 
     let cancelled = false;
     let started = false;
@@ -181,26 +182,31 @@ export function CinematicIntro() {
       try {
         console.debug("[CinematicIntro] tryPlay() called — attempting audio.play()");
       } catch {}
-      const p = audio.play();
-      if (p && typeof p.then === "function") {
-        p
-          .then(() => {
-            playPending = false;
-            try {
-              console.debug("[CinematicIntro] autoplay promise fulfilled");
-            } catch {}
-            begin();
-          })
-          .catch(() => {
-            playPending = false;
-            try {
-              console.debug("[CinematicIntro] autoplay promise rejected — arming gesture fallback");
-            } catch {}
-            armGestureFallback();
-          });
-      } else {
+      try {
+        const p = audio.play();
+        if (p && typeof p.then === "function") {
+          p
+            .then(() => {
+              playPending = false;
+              try {
+                console.debug("[CinematicIntro] autoplay promise fulfilled");
+              } catch {}
+              begin();
+            })
+            .catch(() => {
+              playPending = false;
+              try {
+                console.debug("[CinematicIntro] autoplay promise rejected — arming gesture fallback");
+              } catch {}
+              armGestureFallback();
+            });
+        } else {
+          playPending = false;
+          begin();
+        }
+      } catch {
         playPending = false;
-        begin();
+        armGestureFallback();
       }
     };
 
@@ -299,6 +305,11 @@ export function CinematicIntro() {
       {show && (
         <motion.div
           data-cinematic-intro
+          onPointerDown={() => {
+            try {
+              (window as any).__fa_play_intro?.();
+            } catch {}
+          }}
           initial={{ opacity: 1 }}
           exit={{
             opacity: 0,
