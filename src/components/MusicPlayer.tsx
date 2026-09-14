@@ -170,11 +170,21 @@ export function MusicPlayer() {
     window.addEventListener("pointerdown", onFirstGesture, { once: true });
     window.addEventListener("touchstart", onFirstGesture, { once: true });
     window.addEventListener("keydown", onFirstGesture, { once: true });
+    // Also respond to the custom event dispatched by our gesture helper
+    const onCustomGesture = () => {
+      try {
+        console.debug("[MusicPlayer] fa-user-gesture received — resuming AudioContext if suspended");
+      } catch {}
+      const ctx = ctxRef.current;
+      if (ctx && ctx.state === "suspended") void ctx.resume();
+    };
+    window.addEventListener("fa-user-gesture", onCustomGesture as any, { once: true });
 
     return () => {
       window.removeEventListener("pointerdown", onFirstGesture);
       window.removeEventListener("touchstart", onFirstGesture);
       window.removeEventListener("keydown", onFirstGesture);
+      window.removeEventListener("fa-user-gesture", onCustomGesture as any);
     };
   }, [available]);
 

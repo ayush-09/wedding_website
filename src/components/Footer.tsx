@@ -3,12 +3,26 @@
 import { Monogram } from "./Monogram";
 import { couple } from "@/lib/couple";
 import { useLanguage } from "./LanguageProvider";
+import { signalUserGesture, requestIntroReplay } from "@/lib/gesture";
 
 export function Footer() {
   const { t, lang } = useLanguage();
   const replayIntro = () => {
     if (typeof window === "undefined") return;
-    window.location.reload();
+    try {
+      // Signal a user gesture so audio contexts can resume.
+      signalUserGesture();
+    } catch {}
+    try {
+      // Ask the CinematicIntro component to replay itself without a
+      // full page reload.
+      requestIntroReplay();
+    } catch {}
+    // As a fallback for unexpected pages where the intro component
+    // isn't present, still reload the page.
+    try {
+      if (!document.querySelector("[data-cinematic-intro]")) window.location.reload();
+    } catch {}
   };
 
   return (

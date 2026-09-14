@@ -24,27 +24,20 @@ export function CinematicIntro() {
   const completedRef = useRef(false);
   const timersRef = useRef<number[]>([]);
 
-  useEffect(() => {
+  const startIntro = () => {
     if (typeof window === "undefined") return;
-    if (window.location.pathname !== "/") return;
-    // Per user preference: a refresh restarts the whole experience —
-    // intro replays, envelope re-appears, music resets. No
-    // sessionStorage gating.
+    // reset state so a replay behaves like a fresh load
+    try {
+      timersRef.current.forEach(window.clearTimeout);
+      timersRef.current = [];
+      completedRef.current = false;
+      setStage(0);
+      setShow(true);
+    } catch {}
 
-    setShow(true);
-    // FAST MODE — snappy/cinematic pacing (~halved from the original
-    // ~18 s film to ~8.5 s). Each card still gets enough hold for its
-    // entrance choreography to finish before the card changes.
     const t1 = window.setTimeout(() => setStage(1), 1050);
-    // Card 2 (monogram) holds ~2.3 s: enough for the entrance + a
-    // heartbeat pulse before the card changes.
     const t2 = window.setTimeout(() => setStage(2), 3350);
-    // Card 3 (names) holds ~3 s — letters settle and the sutra +
-    // Sanskrit anchor get a beat to land before moving on.
     const t3 = window.setTimeout(() => setStage(3), 6400);
-    // Card 4 (date) holds ~2.2 s. Fire the intro-complete event at the
-    // same moment we begin fading the intro out so the EnvelopeGate
-    // overlay (z-95) can fade in *beneath* the still-fading intro.
     const t4 = window.setTimeout(() => {
       if (completedRef.current) return;
       completedRef.current = true;
@@ -52,10 +45,21 @@ export function CinematicIntro() {
       setShow(false);
     }, 8600);
     timersRef.current = [t1, t2, t3, t4];
+  };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.location.pathname !== "/") return;
+    // kick off the intro on mount
+    startIntro();
+
+    const onReplay = () => startIntro();
+    window.addEventListener("fa-replay-intro", onReplay as any);
 
     return () => {
       timersRef.current.forEach(window.clearTimeout);
       timersRef.current = [];
+      window.removeEventListener("fa-replay-intro", onReplay as any);
     };
   }, []);
 
@@ -259,6 +263,7 @@ export function CinematicIntro() {
     <AnimatePresence>
       {show && (
         <motion.div
+          data-cinematic-intro
           initial={{ opacity: 1 }}
           exit={{
             opacity: 0,
