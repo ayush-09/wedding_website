@@ -159,14 +159,7 @@ export function CinematicIntro() {
       removeGesture = cleanupGestureListeners;
     };
 
-    // If an earlier component (e.g. FirstClickReplay) already recorded
-    // a user gesture before this component mounted, attempt to play
-    // immediately rather than waiting for the scheduled START_DELAY_MS.
-    try {
-      if ((window as any).__fa_user_gesture) {
-        tryPlay();
-      }
-    } catch {}
+    
 
     const tryPlay = () => {
       const p = audio.play();
@@ -176,6 +169,15 @@ export function CinematicIntro() {
         begin();
       }
     };
+
+    // If an earlier component (e.g. FirstClickReplay) already recorded
+    // a user gesture before this component mounted, attempt to play
+    // immediately rather than waiting for the scheduled START_DELAY_MS.
+    try {
+      if ((window as any).__fa_user_gesture) {
+        tryPlay();
+      }
+    } catch {}
 
     // Arm the first-gesture fallback immediately so an early tap can
     // unlock the short intro music on mobile, then also attempt autoplay
