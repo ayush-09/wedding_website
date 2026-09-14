@@ -14,7 +14,8 @@ export default function FirstClickReplay() {
         // Mark global flag so components that mount later can detect
         // a prior user gesture and attempt playback immediately.
         try {
-        signalUserGesture();
+          signalUserGesture();
+        } catch {}
       } catch {
         // ignore
       }
