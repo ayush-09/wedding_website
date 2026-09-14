@@ -207,6 +207,10 @@ export function CinematicIntro() {
       }
     } catch {}
 
+    // Listen for explicit try-play requests (used by the replay helper)
+    const onTryPlay = () => tryPlay();
+    window.addEventListener("fa-try-play", onTryPlay as any);
+
     // Arm the first-gesture fallback immediately so an early tap can
     // unlock the short intro music on mobile, then also attempt autoplay
     // at the 3s mark as before.
@@ -237,6 +241,7 @@ export function CinematicIntro() {
     return () => {
       stopAll();
       window.removeEventListener("fa-intro-complete", onIntroDone);
+      window.removeEventListener("fa-try-play", onTryPlay as any);
     };
   }, []);
 

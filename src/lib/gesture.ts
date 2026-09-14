@@ -19,4 +19,8 @@ export function requestIntroReplay() {
   try {
     window.dispatchEvent(new Event("fa-replay-intro"));
   } catch {}
+  try {
+    // Also nudge any intro audio to try playback immediately.
+    window.dispatchEvent(new Event("fa-try-play"));
+  } catch {}
 }
