@@ -7,30 +7,7 @@ import { Venue } from "@/components/Venue";
 import { RSVPForm } from "@/components/RSVPForm";
 import { Footer } from "@/components/Footer";
 import { ClientOnly } from "@/components/ClientOnly";
-import { useEffect } from "react";
-
-function FirstClickReplay() {
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const onFirst = () => {
-      try {
-        // Dispatch custom gesture event so CinematicIntro can treat
-        // this as a user interaction and unlock intro autoplay
-        // without forcing a full page reload.
-        window.dispatchEvent(new Event("fa-user-gesture"));
-      } catch {
-        // ignore
-      }
-    };
-    window.addEventListener("pointerdown", onFirst, { once: true });
-    window.addEventListener("touchstart", onFirst, { once: true });
-    return () => {
-      window.removeEventListener("pointerdown", onFirst as any);
-      window.removeEventListener("touchstart", onFirst as any);
-    };
-  }, []);
-  return null;
-}
+import FirstClickReplay from "@/components/FirstClickReplay";
 
 export default function HomePage() {
   return (
