@@ -7,6 +7,11 @@ export default function FirstClickReplay() {
     if (typeof window === "undefined") return;
     const onFirst = () => {
       try {
+        // Mark global flag so components that mount later can detect
+        // a prior user gesture and attempt playback immediately.
+        try {
+          (window as any).__fa_user_gesture = true;
+        } catch {}
         window.dispatchEvent(new Event("fa-user-gesture"));
       } catch {
         // ignore

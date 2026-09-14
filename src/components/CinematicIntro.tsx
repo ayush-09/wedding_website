@@ -159,6 +159,15 @@ export function CinematicIntro() {
       removeGesture = cleanupGestureListeners;
     };
 
+    // If an earlier component (e.g. FirstClickReplay) already recorded
+    // a user gesture before this component mounted, attempt to play
+    // immediately rather than waiting for the scheduled START_DELAY_MS.
+    try {
+      if ((window as any).__fa_user_gesture) {
+        tryPlay();
+      }
+    } catch {}
+
     const tryPlay = () => {
       const p = audio.play();
       if (p && typeof p.then === "function") {
