@@ -14,7 +14,10 @@ function FirstClickReplay() {
     if (typeof window === "undefined") return;
     const onFirst = () => {
       try {
-        window.location.reload();
+        // Dispatch custom gesture event so CinematicIntro can treat
+        // this as a user interaction and unlock intro autoplay
+        // without forcing a full page reload.
+        window.dispatchEvent(new Event("fa-user-gesture"));
       } catch {
         // ignore
       }

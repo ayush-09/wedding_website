@@ -128,23 +128,34 @@ export function CinematicIntro() {
 
     const armGestureFallback = () => {
       if (cancelled || removeGesture) return;
+      // single onGesture handler shared with the custom event so
+      // external callers can also signal a user gesture.
       const onGesture = () => {
         // Don't attempt to play the intro immediately on an early
         // gesture — just remove the temporary listeners. The scheduled
         // autoplay attempt at the 3s mark will call `tryPlay()` then
         // and will succeed if a user gesture occurred earlier.
-        removeGesture?.();
+        cleanupGestureListeners();
       };
-      const cleanup = () => {
-        window.removeEventListener("pointerdown", onGesture);
-        window.removeEventListener("keydown", onGesture);
-        window.removeEventListener("touchstart", onGesture);
+
+      const cleanupGestureListeners = () => {
+        try {
+          window.removeEventListener("pointerdown", onGesture);
+          window.removeEventListener("keydown", onGesture);
+          window.removeEventListener("touchstart", onGesture);
+          window.removeEventListener("fa-user-gesture", onGesture as any);
+        } catch {}
         removeGesture = null;
       };
+
       window.addEventListener("pointerdown", onGesture, { once: true });
       window.addEventListener("keydown", onGesture, { once: true });
       window.addEventListener("touchstart", onGesture, { once: true });
-      removeGesture = cleanup;
+      // allow an outside component to dispatch a custom event to
+      // indicate a gesture (used by the footer/replay and first-click
+      // handler) so the intro's scheduled autoplay can later succeed.
+      window.addEventListener("fa-user-gesture", onGesture as any, { once: true });
+      removeGesture = cleanupGestureListeners;
     };
 
     const tryPlay = () => {
