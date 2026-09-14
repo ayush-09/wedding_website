@@ -86,6 +86,7 @@ export function CinematicIntro() {
 
     let cancelled = false;
     let started = false;
+    let playPending = false;
     let raf = 0;
     let stopTimer = 0;
     let removeGesture: (() => void) | null = null;
@@ -175,6 +176,8 @@ export function CinematicIntro() {
     
 
     const tryPlay = () => {
+      if (cancelled || started || playPending) return;
+      playPending = true;
       try {
         console.debug("[CinematicIntro] tryPlay() called — attempting audio.play()");
       } catch {}
@@ -182,18 +185,21 @@ export function CinematicIntro() {
       if (p && typeof p.then === "function") {
         p
           .then(() => {
+            playPending = false;
             try {
               console.debug("[CinematicIntro] autoplay promise fulfilled");
             } catch {}
             begin();
           })
           .catch(() => {
+            playPending = false;
             try {
               console.debug("[CinematicIntro] autoplay promise rejected — arming gesture fallback");
             } catch {}
             armGestureFallback();
           });
       } else {
+        playPending = false;
         begin();
       }
     };
@@ -217,6 +223,19 @@ export function CinematicIntro() {
     // Listen for explicit try-play requests (used by the replay helper)
     const onTryPlay = () => tryPlay();
     window.addEventListener("fa-try-play", onTryPlay as any);
+
+    const onReplayAudio = () => {
+      cancelled = false;
+      started = false;
+      playPending = false;
+      window.clearTimeout(stopTimer);
+      try {
+        audio.pause();
+        audio.currentTime = 0;
+      } catch {}
+      tryPlay();
+    };
+    window.addEventListener("fa-replay-intro", onReplayAudio as any);
 
     // Arm the first-gesture fallback immediately so an early tap can
     // unlock the short intro music on mobile, then also attempt autoplay
@@ -252,6 +271,7 @@ export function CinematicIntro() {
       } catch {}
       window.removeEventListener("fa-intro-complete", onIntroDone);
       window.removeEventListener("fa-try-play", onTryPlay as any);
+      window.removeEventListener("fa-replay-intro", onReplayAudio as any);
     };
   }, []);
 
