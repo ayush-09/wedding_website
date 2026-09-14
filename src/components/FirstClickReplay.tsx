@@ -6,7 +6,10 @@ import { signalUserGesture } from "@/lib/gesture";
 export default function FirstClickReplay() {
   useEffect(() => {
     if (typeof window === "undefined") return;
+    let handled = false;
     const onFirst = () => {
+      if (handled) return;
+      handled = true;
       try {
         try {
           console.debug("[FirstClickReplay] first gesture detected — signalling gesture");
@@ -24,11 +27,13 @@ export default function FirstClickReplay() {
         // ignore
       }
     };
-    window.addEventListener("pointerdown", onFirst, { once: true });
-    window.addEventListener("touchstart", onFirst, { once: true });
+    window.addEventListener("pointerdown", onFirst, { capture: true });
+    window.addEventListener("touchstart", onFirst, { capture: true });
+    window.addEventListener("click", onFirst, { capture: true });
     return () => {
-      window.removeEventListener("pointerdown", onFirst as any);
-      window.removeEventListener("touchstart", onFirst as any);
+      window.removeEventListener("pointerdown", onFirst, true);
+      window.removeEventListener("touchstart", onFirst, true);
+      window.removeEventListener("click", onFirst, true);
     };
   }, []);
   return null;
