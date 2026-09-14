@@ -7,11 +7,33 @@ import { Venue } from "@/components/Venue";
 import { RSVPForm } from "@/components/RSVPForm";
 import { Footer } from "@/components/Footer";
 import { ClientOnly } from "@/components/ClientOnly";
+import { useEffect } from "react";
+
+function FirstClickReplay() {
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onFirst = () => {
+      try {
+        window.location.reload();
+      } catch {
+        // ignore
+      }
+    };
+    window.addEventListener("pointerdown", onFirst, { once: true });
+    window.addEventListener("touchstart", onFirst, { once: true });
+    return () => {
+      window.removeEventListener("pointerdown", onFirst as any);
+      window.removeEventListener("touchstart", onFirst as any);
+    };
+  }, []);
+  return null;
+}
 
 export default function HomePage() {
   return (
     <main className="relative min-h-screen bg-[var(--bg)]">
       <ClientOnly>
+        <FirstClickReplay />
         <Hero />
       </ClientOnly>
       <Family />
