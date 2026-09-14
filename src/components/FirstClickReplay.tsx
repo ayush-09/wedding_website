@@ -11,6 +11,10 @@ export default function FirstClickReplay() {
         try {
           console.debug("[FirstClickReplay] first gesture detected — signalling gesture");
         } catch {}
+        try {
+          const playIntro = (window as any).__fa_play_intro;
+          if (typeof playIntro === "function") playIntro();
+        } catch {}
         // Mark global flag so components that mount later can detect
         // a prior user gesture and attempt playback immediately.
         try {

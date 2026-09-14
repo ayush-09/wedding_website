@@ -198,6 +198,13 @@ export function CinematicIntro() {
       }
     };
 
+    // Expose the player to the first-touch bridge. Calling this function
+    // synchronously from the native touch handler preserves mobile user
+    // activation, which custom events alone can lose on iOS and Android.
+    try {
+      (window as any).__fa_play_intro = tryPlay;
+    } catch {}
+
     // If an earlier component (e.g. FirstClickReplay) already recorded
     // a user gesture before this component mounted, attempt to play
     // immediately rather than waiting for the scheduled START_DELAY_MS.
@@ -240,6 +247,9 @@ export function CinematicIntro() {
 
     return () => {
       stopAll();
+      try {
+        delete (window as any).__fa_play_intro;
+      } catch {}
       window.removeEventListener("fa-intro-complete", onIntroDone);
       window.removeEventListener("fa-try-play", onTryPlay as any);
     };
