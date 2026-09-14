@@ -107,6 +107,9 @@ export function CinematicIntro() {
     const begin = () => {
       // Guard against double-start (autoplay success + a gesture).
       if (cancelled || started) return;
+      try {
+        console.debug("[CinematicIntro] begin() — starting intro audio");
+      } catch {}
       started = true;
       try {
         audio.currentTime = 0;
@@ -138,6 +141,9 @@ export function CinematicIntro() {
         try {
           cleanupGestureListeners?.();
         } catch {}
+        try {
+          console.debug("[CinematicIntro] gesture fallback received — calling tryPlay");
+        } catch {}
         tryPlay();
       };
 
@@ -156,15 +162,33 @@ export function CinematicIntro() {
       window.addEventListener("touchstart", onGesture, { once: true });
       // external custom event used by other components to signal a gesture
       window.addEventListener("fa-user-gesture", onGesture as any, { once: true });
+      try {
+        console.debug("[CinematicIntro] armGestureFallback: listeners attached");
+      } catch {}
       removeGesture = cleanupGestureListeners;
     };
 
     
 
     const tryPlay = () => {
+      try {
+        console.debug("[CinematicIntro] tryPlay() called — attempting audio.play()");
+      } catch {}
       const p = audio.play();
       if (p && typeof p.then === "function") {
-        p.then(() => begin()).catch(() => armGestureFallback());
+        p
+          .then(() => {
+            try {
+              console.debug("[CinematicIntro] autoplay promise fulfilled");
+            } catch {}
+            begin();
+          })
+          .catch(() => {
+            try {
+              console.debug("[CinematicIntro] autoplay promise rejected — arming gesture fallback");
+            } catch {}
+            armGestureFallback();
+          });
       } else {
         begin();
       }

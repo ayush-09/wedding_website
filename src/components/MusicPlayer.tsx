@@ -83,6 +83,10 @@ export function MusicPlayer() {
     const bounds = loopBoundsRef.current;
     if (!ctx || !buffer || !bounds) return;
 
+    try {
+      console.debug("[MusicPlayer] startPlayback() — starting background loop");
+    } catch {}
+
     if (ctx.state === "suspended") void ctx.resume();
 
     const source = ctx.createBufferSource();
@@ -153,6 +157,9 @@ export function MusicPlayer() {
     if (!available) return;
 
     const onFirstGesture = () => {
+      try {
+        console.debug("[MusicPlayer] first user gesture — resuming AudioContext if suspended");
+      } catch {}
       const ctx = ctxRef.current;
       if (ctx && ctx.state === "suspended") void ctx.resume();
       window.removeEventListener("pointerdown", onFirstGesture);
