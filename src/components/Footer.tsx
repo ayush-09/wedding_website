@@ -9,6 +9,7 @@ export function Footer() {
   const { t, lang } = useLanguage();
   const replayIntro = () => {
     if (typeof window === "undefined") return;
+    const playIntro = (window as any).__fa_play_intro;
     try {
       // Signal a user gesture so audio contexts can resume.
       signalUserGesture();
@@ -18,11 +19,14 @@ export function Footer() {
       // full page reload.
       requestIntroReplay();
     } catch {}
-    // As a fallback for unexpected pages where the intro component
-    // isn't present, still reload the page.
+    // Start audio directly inside the button's user activation. This is
+    // required by mobile Safari and also avoids relying on event timing.
     try {
-      if (!document.querySelector("[data-cinematic-intro]")) window.location.reload();
-    } catch {}
+      if (typeof playIntro === "function") playIntro();
+      else window.location.reload();
+    } catch {
+      window.location.reload();
+    }
   };
 
   return (
