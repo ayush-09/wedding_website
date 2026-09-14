@@ -1,0 +1,22 @@
+node_modules
+.next
+out
+build
+dist
+.env
+.env.local
+.env.*.local
+*.log
+.DS_Store
+.vercel
+next-env.d.ts
+tsconfig.tsbuildinfo
+
+# Local reference images (not meant to be committed)
+Gemini_Generated_Image_*.png
+image.png
+
+# Claude Code per-machine session settings
+.claude/
+
+.vercel

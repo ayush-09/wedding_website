@@ -1,0 +1,530 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #F5E6C9;           /* cream base */
+  --fg: #0F0F26;           /* deep indigo text */
+  --accent: #1B1B3A;       /* royal indigo accent */
+  --gold: #D4A84B;
+  --saffron: #E85A2F;
+  --indigo: #1B1B3A;
+  --indigo-deep: #0F0F26;
+  --ash: #F3EADA;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--fg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body.fa-ready #fa-prepaint {
+  opacity: 0;
+}
+
+/* MUST be `auto`, not `smooth`. Lenis drives the smooth scrolling by
+   calling window.scrollTo every frame; CSS `scroll-behavior: smooth`
+   makes the browser try to animate to each per-frame target and get
+   interrupted the next frame, so the scroll position stutters/flickers
+   (badly on mobile). Lenis provides the smoothness instead. */
+html {
+  scroll-behavior: auto;
+}
+
+::selection { background: var(--accent); color: var(--bg); }
+
+.grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+.hairline {
+  background: linear-gradient(90deg, transparent, currentColor 20%, currentColor 80%, transparent);
+  height: 1px;
+  opacity: 0.3;
+}
+
+/* .script — italic display serif used for hero names and editorial accents */
+.script {
+  font-family: var(--font-display), "DM Serif Display", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* .font-script — deliberate cursive/calligraphic moments (Allura) */
+.font-script {
+  font-family: var(--font-script), "Allura", "Parisienne", cursive;
+  font-weight: 400;
+}
+
+.sanskrit {
+  font-family: var(--font-sanskrit), "Noto Serif Devanagari", serif;
+}
+
+.kerning { letter-spacing: 0.32em; text-transform: uppercase; }
+.kerning-tight { letter-spacing: 0.08em; }
+
+.vignette {
+  background: radial-gradient(120% 80% at 50% 0%, transparent 0%, rgba(15,15,38,0.08) 70%, rgba(15,15,38,0.18) 100%);
+}
+
+/* Light sections — cream canvas with indigo + gold halos */
+.bg-paper {
+  background:
+    radial-gradient(70% 55% at 20% 18%, rgba(27, 27, 58, 0.14), transparent 65%),
+    radial-gradient(70% 55% at 82% 82%, rgba(212, 168, 75, 0.16), transparent 65%),
+    radial-gradient(60% 45% at 50% 50%, rgba(232, 90, 47, 0.08), transparent 70%),
+    linear-gradient(180deg, #F5E6C9 0%, #ECD8A8 100%);
+}
+
+/* Deep indigo cinema — primary dark-section backdrop */
+.bg-cinema {
+  background:
+    radial-gradient(80% 60% at 50% 0%, rgba(42, 27, 94, 0.6), transparent 60%),
+    linear-gradient(180deg, #1B1B3A 0%, #0F0F26 100%);
+}
+
+/* Sepia — aged gold temple-stone */
+.bg-sepia {
+  background:
+    radial-gradient(60% 40% at 30% 30%, rgba(212, 168, 75, 0.28), transparent 70%),
+    radial-gradient(50% 40% at 70% 70%, rgba(27, 27, 58, 0.12), transparent 70%),
+    linear-gradient(180deg, #ECD7A8 0%, #E0C486 100%);
+}
+
+/* Twilight — Kailash night sky, deep indigo into royal */
+.bg-twilight {
+  background:
+    radial-gradient(70% 50% at 50% 10%, rgba(212, 168, 75, 0.2), transparent 60%),
+    radial-gradient(60% 40% at 50% 90%, rgba(232, 90, 47, 0.18), transparent 70%),
+    linear-gradient(180deg, #0F0F26 0%, #1B1B3A 50%, #2A1B5E 100%);
+}
+
+/* Temple stone — warm bhasma, gold accents */
+.bg-temple {
+  background:
+    radial-gradient(60% 40% at 30% 20%, rgba(27, 27, 58, 0.1), transparent 60%),
+    radial-gradient(55% 40% at 80% 80%, rgba(212, 168, 75, 0.22), transparent 65%),
+    linear-gradient(180deg, #ECD8A8 0%, #D8CDAE 100%);
+}
+
+/* Divine — cream canvas with soft indigo crown */
+.bg-divine {
+  background:
+    radial-gradient(80% 55% at 50% 0%, rgba(27, 27, 58, 0.16), transparent 60%),
+    radial-gradient(70% 50% at 50% 100%, rgba(212, 168, 75, 0.2), transparent 65%),
+    linear-gradient(180deg, #F5E6C9 0%, #E8D09A 100%);
+}
+
+/* Fire — indigo + gold burn for accent sections */
+.bg-fire {
+  background:
+    radial-gradient(70% 50% at 50% 100%, rgba(212, 168, 75, 0.4), transparent 60%),
+    linear-gradient(180deg, #0F0F26 0%, #1B1B3A 100%);
+}
+
+/* Divine logo animations — guaranteed to run regardless of Tailwind JIT */
+@keyframes divineFadeIn {
+  0% { opacity: 0; transform: scale(0.92) rotate(-6deg); }
+  60% { opacity: 1; }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+@keyframes mandalaSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes sutraGlow {
+  0%, 100% { filter: drop-shadow(0 0 2px rgba(212, 168, 75, 0.4)); }
+  50% { filter: drop-shadow(0 0 10px rgba(212, 168, 75, 0.85)); }
+}
+
+/* Auto-scrolling marquee banner */
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* Animated gradient shift for event card borders / hover sweeps */
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Venue-globe attention ping — three concentric rings expanding
+   outward from the pin area to draw the eye to the destination. */
+@keyframes venue-ping {
+  0%   { transform: scale(0.4); opacity: 0.9; }
+  70%  { opacity: 0.45; }
+  100% { transform: scale(2.8); opacity: 0; }
+}
+
+/* ──────────── Advanced Button — Ethereal ────────────
+   Rotating conic-gradient halo that blooms on hover. Uses CSS @property
+   so the --btn-angle custom property can be animated natively by the
+   compositor (avoids JS animation overhead). */
+@property --btn-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes btn-angle-spin {
+  to { --btn-angle: 360deg; }
+}
+
+.btn-ethereal {
+  isolation: isolate;
+}
+
+.btn-conic-halo {
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0;
+  filter: blur(6px);
+  background: conic-gradient(
+    from var(--btn-angle, 0deg),
+    transparent 0%,
+    rgba(212, 168, 75, 0.85) 12%,
+    transparent 28%,
+    rgba(232, 90, 47, 0.6) 52%,
+    transparent 68%,
+    rgba(212, 168, 75, 0.85) 88%,
+    transparent 100%
+  );
+  animation: btn-angle-spin 3.5s linear infinite;
+  transition: opacity 0.45s ease-out;
+}
+
+.btn-ethereal:hover .btn-conic-halo,
+.btn-ethereal:focus-visible .btn-conic-halo {
+  opacity: 1;
+}
+
+/* ──────────────────────────────────────────────────────────
+   DARK THEME
+   · Activated by toggling `.dark` on <html> (ThemeProvider).
+   · Strategy: flip the cream/paper surfaces to deep-indigo and
+     swap ink/indigo text tokens to cream/gold via CSS selectors,
+     rather than adding `dark:` variants across every component.
+   · Gold and saffron accents stay unchanged — they read well on
+     both cream and indigo.
+   · Transition on html so flipping the toggle cross-fades the
+     whole site instead of snapping.
+   ────────────────────────────────────────────────────────── */
+
+html {
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+html.dark {
+  --bg: #0F0F26;
+  --fg: #F5E6C9;
+  --accent: #D4A84B;
+  --ash: #1B1B3A;
+  color-scheme: dark;
+}
+
+html.dark body {
+  background: #0F0F26;
+  color: #F5E6C9;
+}
+
+html.dark ::selection {
+  background: #D4A84B;
+  color: #0F0F26;
+}
+
+/* Light-surface gradients — repainted as twilight gradients. */
+html.dark .bg-paper {
+  background:
+    radial-gradient(70% 55% at 20% 18%, rgba(212, 168, 75, 0.14), transparent 65%),
+    radial-gradient(70% 55% at 82% 82%, rgba(232, 90, 47, 0.12), transparent 65%),
+    radial-gradient(60% 45% at 50% 50%, rgba(42, 27, 94, 0.3), transparent 70%),
+    linear-gradient(180deg, #0F0F26 0%, #1B1B3A 100%);
+}
+
+html.dark .bg-sepia {
+  background:
+    radial-gradient(60% 40% at 30% 30%, rgba(212, 168, 75, 0.22), transparent 70%),
+    radial-gradient(50% 40% at 70% 70%, rgba(232, 90, 47, 0.12), transparent 70%),
+    linear-gradient(180deg, #1B1B3A 0%, #0F0F26 100%);
+}
+
+html.dark .bg-divine {
+  background:
+    radial-gradient(80% 55% at 50% 0%, rgba(212, 168, 75, 0.2), transparent 60%),
+    radial-gradient(70% 50% at 50% 100%, rgba(232, 90, 47, 0.14), transparent 65%),
+    linear-gradient(180deg, #0F0F26 0%, #1B1B3A 100%);
+}
+
+html.dark .bg-temple {
+  background:
+    radial-gradient(60% 40% at 30% 20%, rgba(212, 168, 75, 0.15), transparent 60%),
+    radial-gradient(55% 40% at 80% 80%, rgba(232, 90, 47, 0.12), transparent 65%),
+    linear-gradient(180deg, #1B1B3A 0%, #0F0F26 100%);
+}
+
+/* Solid cream surfaces → deep indigo */
+html.dark .bg-cream { background-color: #0F0F26; }
+html.dark .bg-bone { background-color: #1B1B3A; }
+html.dark .bg-ash { background-color: #1B1B3A; }
+
+/* Cream with opacity — retint to ink */
+html.dark .bg-cream\/70 { background-color: rgba(27, 27, 58, 0.7); }
+html.dark .bg-cream\/95 { background-color: rgba(27, 27, 58, 0.92); }
+html.dark .bg-cream\/\[0\.03\] { background-color: rgba(245, 230, 201, 0.03); }
+html.dark .bg-paper\/75 { background-color: rgba(15, 15, 38, 0.75); }
+html.dark .bg-paper\/70 { background-color: rgba(15, 15, 38, 0.7); }
+
+/* Events gradient strip: paper → #EFE1C5 → paper */
+html.dark .bg-gradient-to-b.from-paper { --tw-gradient-from: #0F0F26; }
+html.dark .bg-gradient-to-b.to-paper { --tw-gradient-to: #0F0F26; }
+html.dark .via-\[\#EFE1C5\] { --tw-gradient-via: #1B1B3A; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-via), var(--tw-gradient-to); }
+
+/* Text colours: ink → cream, indigo → goldsoft */
+html.dark .text-ink { color: #F5E6C9; }
+html.dark .text-ink\/90 { color: rgba(245, 230, 201, 0.9); }
+html.dark .text-ink\/85 { color: rgba(245, 230, 201, 0.85); }
+html.dark .text-ink\/80 { color: rgba(245, 230, 201, 0.82); }
+html.dark .text-ink\/75 { color: rgba(245, 230, 201, 0.78); }
+html.dark .text-ink\/70 { color: rgba(245, 230, 201, 0.72); }
+html.dark .text-ink\/65 { color: rgba(245, 230, 201, 0.68); }
+html.dark .text-ink\/60 { color: rgba(245, 230, 201, 0.62); }
+html.dark .text-ink\/55 { color: rgba(245, 230, 201, 0.58); }
+html.dark .text-ink\/50 { color: rgba(245, 230, 201, 0.52); }
+html.dark .text-ink\/45 { color: rgba(245, 230, 201, 0.48); }
+html.dark .text-ink\/40 { color: rgba(245, 230, 201, 0.4); }
+html.dark .text-ink\/35 { color: rgba(245, 230, 201, 0.35); }
+html.dark .text-ink\/30 { color: rgba(245, 230, 201, 0.3); }
+html.dark .text-ink\/25 { color: rgba(245, 230, 201, 0.25); }
+html.dark .text-ink\/20 { color: rgba(245, 230, 201, 0.2); }
+html.dark .text-ink\/15 { color: rgba(245, 230, 201, 0.15); }
+
+html.dark .text-indigo { color: #E4D4A8; }
+html.dark .text-indigo\/90 { color: rgba(212, 168, 75, 0.9); }
+html.dark .text-indigo\/85 { color: rgba(212, 168, 75, 0.85); }
+html.dark .text-indigo\/80 { color: rgba(212, 168, 75, 0.82); }
+html.dark .text-indigo\/75 { color: rgba(212, 168, 75, 0.78); }
+html.dark .text-indigo\/70 { color: rgba(212, 168, 75, 0.72); }
+html.dark .text-indigo\/65 { color: rgba(212, 168, 75, 0.68); }
+html.dark .text-indigo\/60 { color: rgba(212, 168, 75, 0.62); }
+html.dark .text-indigo\/55 { color: rgba(212, 168, 75, 0.58); }
+html.dark .text-indigo\/50 { color: rgba(212, 168, 75, 0.52); }
+html.dark .text-indigo\/45 { color: rgba(212, 168, 75, 0.48); }
+html.dark .text-indigo\/40 { color: rgba(212, 168, 75, 0.4); }
+html.dark .text-indigo\/35 { color: rgba(212, 168, 75, 0.35); }
+html.dark .text-indigo\/30 { color: rgba(212, 168, 75, 0.3); }
+
+/* text-wine — indigo #1B1B3A used as an accent colour on cream
+   surfaces (Countdown highlight, etc.). In dark mode these surfaces
+   are repainted dark, so `text-wine` becomes indigo-on-indigo and
+   disappears. Remap to cream. */
+html.dark .text-wine { color: #F5E6C9; }
+html.dark .text-wine\/90 { color: rgba(245, 230, 201, 0.9); }
+html.dark .text-wine\/80 { color: rgba(245, 230, 201, 0.82); }
+html.dark .text-wine\/70 { color: rgba(245, 230, 201, 0.75); }
+html.dark .text-wine\/60 { color: rgba(245, 230, 201, 0.65); }
+html.dark .text-wine\/50 { color: rgba(245, 230, 201, 0.55); }
+html.dark .text-wine\/45 { color: rgba(245, 230, 201, 0.5); }
+html.dark .text-wine\/40 { color: rgba(245, 230, 201, 0.45); }
+html.dark .text-wine\/30 { color: rgba(245, 230, 201, 0.35); }
+
+/* Countdown digits — the light-theme uses a `from-wine to-ink`
+   gradient clipped to the text shape, which produces indigo digits
+   on a cream surface. On dark surfaces that's dark-on-dark, so we
+   repaint the gradient in gold tones for the dark theme. */
+html.dark .bg-gradient-to-b.from-wine.to-ink {
+  background-image: linear-gradient(to bottom, #E4D4A8, #D4A84B) !important;
+}
+
+/* Ticket-style surfaces use `bg-cream` — which our `.bg-cream`
+   override turns dark indigo. Wine-based border-dashed strips +
+   wine text need corresponding adjustments to stay readable. */
+html.dark .border-wine\/40 { border-color: rgba(245, 230, 201, 0.4); }
+html.dark .bg-wine\/5 { background-color: rgba(245, 230, 201, 0.05); }
+html.dark .bg-wine\/10 { background-color: rgba(245, 230, 201, 0.1); }
+
+/* Borders — ink-based separators re-tint to cream/cream-alpha */
+html.dark .border-ink { border-color: rgba(245, 230, 201, 0.5); }
+html.dark .border-ink\/5 { border-color: rgba(245, 230, 201, 0.05); }
+html.dark .border-ink\/10 { border-color: rgba(245, 230, 201, 0.1); }
+html.dark .border-ink\/15 { border-color: rgba(245, 230, 201, 0.15); }
+html.dark .border-ink\/20 { border-color: rgba(245, 230, 201, 0.2); }
+html.dark .border-ink\/25 { border-color: rgba(245, 230, 201, 0.25); }
+html.dark .border-ink\/30 { border-color: rgba(245, 230, 201, 0.3); }
+
+html.dark .border-indigo\/50 { border-color: rgba(212, 168, 75, 0.5); }
+html.dark .border-indigo\/40 { border-color: rgba(212, 168, 75, 0.4); }
+
+/* Backgrounds that use opacity of indigo/ink */
+html.dark .bg-indigo\/\[0\.03\] { background-color: rgba(212, 168, 75, 0.04); }
+html.dark .bg-indigo\/5 { background-color: rgba(212, 168, 75, 0.05); }
+html.dark .bg-indigo\/10 { background-color: rgba(212, 168, 75, 0.1); }
+html.dark .bg-ink\/5 { background-color: rgba(245, 230, 201, 0.05); }
+html.dark .bg-ink\/10 { background-color: rgba(245, 230, 201, 0.1); }
+
+/* Footer border */
+html.dark footer.border-t { border-top-color: rgba(245, 230, 201, 0.1); }
+
+/* Shadow cards become deeper on dark so they still read */
+html.dark .shadow-\[0_8px_30px_rgba\(15\,15\,38\,0\.05\)\] {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+}
+html.dark .shadow-\[0_18px_50px_rgba\(15\,15\,38\,0\.14\)\] {
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.65);
+}
+
+/* ── Devanagari visibility boost (both themes) ────────────
+   Tiro Devanagari Hindi has thinner strokes than the Latin
+   display/serif stack we use elsewhere. Whether the page is in
+   light mode *with dark-bg sections* (RSVP `bg-ink`, Ardhanari
+   `bg-twilight`) or in full dark mode, the Devanagari text sits
+   at barely-threshold contrast
+   and reads as washed out.
+
+   These rules are theme-agnostic: a subtle text-shadow in the
+   glyph's own colour for optical weight (NOT font-synthesis —
+   that mangles Devanagari conjuncts), antialiased smoothing,
+   and letter-spacing to replace the Latin-kerned defaults the
+   Devanagari was inheriting. */
+.font-sanskrit,
+.sanskrit {
+  text-shadow: 0 0 0.4px currentColor;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+  letter-spacing: 0.01em;
+}
+
+/* Opacity boosts for Devanagari on low-alpha cream text. These
+   apply on *any* theme because the problem exists in light mode
+   whenever Devanagari lands on a dark-surface section. The `>`
+   combinator + descendant combinator means the element can
+   either carry `font-sanskrit` itself or inherit it from an
+   ancestor (since `font-family` cascades, the `font-sanskrit`
+   class on a parent applies the Devanagari font to all children
+   and we want their colours boosted too). */
+/* `[class*="sanskrit"]` matches both `.font-sanskrit` (Tailwind)
+   and `.sanskrit` (our custom utility). A single attribute-substring
+   selector covers both without having to restate each rule twice.
+   The cream/ash opacity boosts apply regardless of theme because
+   the problem exists whenever Devanagari sits on a dark surface —
+   and that happens in light-theme too (RSVP, Ardhanarishwara, Ring
+   Ceremony are all dark sections). */
+[class*="sanskrit"].text-cream\/55,
+[class*="sanskrit"] .text-cream\/55 { color: rgba(245, 230, 201, 0.82) !important; }
+[class*="sanskrit"].text-cream\/65,
+[class*="sanskrit"] .text-cream\/65 { color: rgba(245, 230, 201, 0.9) !important; }
+[class*="sanskrit"].text-cream\/70,
+[class*="sanskrit"] .text-cream\/70 { color: rgba(245, 230, 201, 0.92) !important; }
+[class*="sanskrit"].text-cream\/75,
+[class*="sanskrit"] .text-cream\/75 { color: rgba(245, 230, 201, 0.95) !important; }
+[class*="sanskrit"].text-cream\/80,
+[class*="sanskrit"] .text-cream\/80 { color: rgba(245, 230, 201, 0.97) !important; }
+[class*="sanskrit"].text-cream\/85,
+[class*="sanskrit"] .text-cream\/85 { color: rgba(245, 230, 201, 0.98) !important; }
+[class*="sanskrit"].text-cream\/90,
+[class*="sanskrit"] .text-cream\/90 { color: rgba(245, 230, 201, 1) !important; }
+
+[class*="sanskrit"].text-ash\/60,
+[class*="sanskrit"] .text-ash\/60 { color: rgba(243, 234, 218, 0.88) !important; }
+[class*="sanskrit"].text-ash\/65,
+[class*="sanskrit"] .text-ash\/65 { color: rgba(243, 234, 218, 0.9) !important; }
+[class*="sanskrit"].text-ash\/70,
+[class*="sanskrit"] .text-ash\/70 { color: rgba(243, 234, 218, 0.92) !important; }
+[class*="sanskrit"].text-ash\/85,
+[class*="sanskrit"] .text-ash\/85 { color: rgba(243, 234, 218, 0.98) !important; }
+
+/* Ditto for ink/indigo classes on dark sections — in light mode
+   the dark-bg sections use `text-cream` but a few spots inherit
+   `text-ink` from parent defaults; force cream on those too so
+   Devanagari doesn't collapse into the dark backdrop. */
+.bg-ink [class*="sanskrit"],
+.bg-twilight [class*="sanskrit"],
+.bg-cinema [class*="sanskrit"],
+.bg-fire [class*="sanskrit"] {
+  color: #F5E6C9;
+}
+
+/* Also boost the ink/indigo variants in dark mode — these are
+   the ones that our dark-theme CSS already flips to cream, but
+   on Devanagari the cream at 65–80% feels lighter than it
+   should. Scope these to `html.dark` since on light mode they
+   remain dark-on-light and are fine. */
+html.dark .font-sanskrit.text-ink\/60,
+html.dark .font-sanskrit .text-ink\/60 { color: rgba(245, 230, 201, 0.85); }
+html.dark .font-sanskrit.text-ink\/65,
+html.dark .font-sanskrit .text-ink\/65 { color: rgba(245, 230, 201, 0.88); }
+html.dark .font-sanskrit.text-ink\/70,
+html.dark .font-sanskrit .text-ink\/70 { color: rgba(245, 230, 201, 0.9); }
+html.dark .font-sanskrit.text-ink\/75,
+html.dark .font-sanskrit .text-ink\/75 { color: rgba(245, 230, 201, 0.92); }
+html.dark .font-sanskrit.text-ink\/80,
+html.dark .font-sanskrit .text-ink\/80 { color: rgba(245, 230, 201, 0.95); }
+
+html.dark .font-sanskrit.text-indigo\/60,
+html.dark .font-sanskrit .text-indigo\/60 { color: rgba(228, 212, 168, 0.95); }
+html.dark .font-sanskrit.text-indigo\/70,
+html.dark .font-sanskrit .text-indigo\/70 { color: rgba(228, 212, 168, 0.98); }
+html.dark .font-sanskrit.text-indigo\/75,
+html.dark .font-sanskrit .text-indigo\/75 { color: rgba(228, 212, 168, 1); }
+
+/* Dark-mode ::selection rule — previously produced muddy
+   contrast when gold-on-gold selection fell over gold text.
+   Use a cream-tinted translucent highlight instead, which
+   reads cleanly over gold / cream / indigo text alike. */
+html.dark ::selection {
+  background: rgba(245, 230, 201, 0.28);
+  color: #F5E6C9;
+}
+
+/* ──────────────────────────────────────────────────────────
+   HERO PHOTO VEIL
+   Theme-aware translucent wash that sits between the diptych
+   photos and the type. Light theme uses a warm cream/ink
+   gradient that softens the hero photos so the gold monogram
+   and italic names read clearly. Dark theme uses a deeper
+   ink overlay so the photos sit further back and the gold
+   foreground glows.
+   ────────────────────────────────────────────────────────── */
+.hero-veil {
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 50%, rgba(15, 8, 18, 0.32) 0%, rgba(15, 8, 18, 0.55) 60%, rgba(10, 4, 12, 0.78) 100%);
+}
+html.dark .hero-veil {
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 50%, rgba(8, 4, 14, 0.55) 0%, rgba(8, 4, 14, 0.78) 60%, rgba(4, 2, 8, 0.92) 100%);
+}
+
+/* ──────────────────────────────────────────────────────────
+   FAMILY PHOTO VEIL
+   Heavy cream wash that lets a background photo bleed through
+   subtly without overwhelming the dark editorial text. Light
+   theme keeps the warm paper feel; dark theme switches to a
+   deep ink wash with the same gold/cream radial accents.
+   ────────────────────────────────────────────────────────── */
+.family-veil {
+  background:
+    radial-gradient(70% 55% at 20% 18%, rgba(27, 27, 58, 0.10), transparent 65%),
+    radial-gradient(70% 55% at 82% 82%, rgba(212, 168, 75, 0.12), transparent 65%),
+    linear-gradient(180deg, rgba(245, 230, 201, 0.82) 0%, rgba(236, 216, 168, 0.92) 100%);
+}
+html.dark .family-veil {
+  background:
+    radial-gradient(70% 55% at 20% 18%, rgba(212, 168, 75, 0.10), transparent 65%),
+    radial-gradient(70% 55% at 82% 82%, rgba(232, 90, 47, 0.10), transparent 65%),
+    linear-gradient(180deg, rgba(15, 15, 38, 0.80) 0%, rgba(27, 27, 58, 0.92) 100%);
+}
+
